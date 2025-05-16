@@ -1,5 +1,6 @@
 package ra.project.advice;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.mail.MessagingException;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +17,7 @@ import java.util.Map;
 
 @RestControllerAdvice
 @Slf4j
+@Hidden
 public class APIControllerAdvice {
     // Bắt va xu lý lỗi NotFoundException
     @ExceptionHandler(NotFoundException.class)

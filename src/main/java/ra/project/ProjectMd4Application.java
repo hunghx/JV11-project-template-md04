@@ -3,7 +3,9 @@ package ra.project;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.servers.Server;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
@@ -46,15 +48,13 @@ public class ProjectMd4Application {
                 "secure", true)); // Nên dùng HTTPS
     }
     @Bean
-    public OpenAPI myOpenAPI() {
-        Server devServer = new Server();
-        devServer.setDescription("http://localhost:9999");
-        Server prodServer = new Server();
-        prodServer.setDescription("http://localhost:9999");
-
-        return new OpenAPI().servers(List.of(devServer, prodServer));
+    OpenAPI customOpenAPI() {
+        return new OpenAPI().info(new Info().title("Eventos API")
+                .description("API RESTful para gerenciamento de membros, grupos e convidados.").version("1.0.0")
+                .contact(new Contact().name("Samuel Maciel da Silva").email("samuelmsilva@outlook.com.br")
+                        .url("https://github.com/samuelmsilva2v"))
+                .license(new License().name("Apache 2.0").url("http://springdoc.org")));
     }
-// cấu hinhd swagger
 
 
 }
