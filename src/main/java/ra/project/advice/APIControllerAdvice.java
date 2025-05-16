@@ -1,6 +1,8 @@
 package ra.project.advice;
 
 import jakarta.mail.MessagingException;
+import jakarta.validation.ConstraintViolationException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -13,10 +15,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestControllerAdvice
+@Slf4j
 public class APIControllerAdvice {
     // Bắt va xu lý lỗi NotFoundException
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<Map<String,ErrorResponse>> handleNotFoundException(NotFoundException e) {
+        log.error(e.getMessage());
         ErrorResponse err = new ErrorResponse();
         err.setCode(404);
         err.setMessage(e.getMessage());
@@ -28,6 +32,7 @@ public class APIControllerAdvice {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String,ErrorResponse>> handleMethodArgumentException(MethodArgumentNotValidException e){
+        log.error(e.getMessage());
         Map<String, String> details = new HashMap<>();
         e.getFieldErrors().forEach(fieldError -> {
             details.put(fieldError.getField(), fieldError.getDefaultMessage());
@@ -42,11 +47,20 @@ public class APIControllerAdvice {
     }
     @ExceptionHandler(MessagingException.class)
     public ResponseEntity<?> handleSendmail(MessagingException e){
-        e.printStackTrace();
+        log.error(e.getMessage());
         return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
-    @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<?> handleRuntime(RuntimeException e){
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    // Lỗi conflitch Du liệu áp dụng cho ràng buộc Unique:
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<Map<String,ErrorResponse>> handleConflictData(ConstraintViolationException e) {
+        log.error(e.getMessage());
+        ErrorResponse err = new ErrorResponse();
+        err.setCode(409);
+        err.setMessage(HttpStatus.CONFLICT.name());
+        err.setDetails(e.getMessage());
+        Map<String,ErrorResponse> map = new HashMap<>();
+        map.put("error", err);
+        return new ResponseEntity<>(map, HttpStatus.CONFLICT);
     }
+
 }
