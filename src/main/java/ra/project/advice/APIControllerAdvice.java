@@ -4,11 +4,13 @@ import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.mail.MessagingException;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import ra.project.exception.AuthenticationException;
 import ra.project.exception.NotFoundException;
 import ra.project.model.dto.response.ErrorResponse;
 
@@ -47,14 +49,25 @@ public class APIControllerAdvice {
         map.put("error", err);
         return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
     }
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<Map<String,ErrorResponse>> handleAuthentication(AuthenticationException e){
+        log.error(e.getMessage());
+        ErrorResponse err = new ErrorResponse();
+        err.setCode(400);
+        err.setMessage(HttpStatus.UNAUTHORIZED.name());
+        err.setDetails(e.getMessage());
+        Map<String,ErrorResponse> map = new HashMap<>();
+        map.put("error", err);
+        return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
+    }
     @ExceptionHandler(MessagingException.class)
     public ResponseEntity<?> handleSendmail(MessagingException e){
         log.error(e.getMessage());
         return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
     // Lỗi conflitch Du liệu áp dụng cho ràng buộc Unique:
-    @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<Map<String,ErrorResponse>> handleConflictData(ConstraintViolationException e) {
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<Map<String,ErrorResponse>> handleConflictData(DataIntegrityViolationException e) {
         log.error(e.getMessage());
         ErrorResponse err = new ErrorResponse();
         err.setCode(409);

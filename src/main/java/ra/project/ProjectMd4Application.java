@@ -6,7 +6,6 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
-import io.swagger.v3.oas.models.servers.Server;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,6 +20,7 @@ public class ProjectMd4Application {
 
     public static void main(String[] args) {
         SpringApplication.run(ProjectMd4Application.class, args);
+
     }
     @Bean
     public ModelMapper modelMapper() {
