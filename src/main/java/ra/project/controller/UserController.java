@@ -22,25 +22,25 @@ import java.util.Map;
 public class UserController {
     private final IUserService userService;
     @GetMapping("/me")
-    public ResponseEntity<UserInfo> getCurrentUser(@AuthenticationPrincipal UserDetails details) {
-        return ResponseEntity.ok(userService.getCurrentUser(details.getUsername()));
+    public ResponseEntity<UserInfo> getCurrentUser(@RequestParam Long userId) {
+        return ResponseEntity.ok(userService.getCurrentUser(userId));
     }
 
     @PutMapping("/me")
-    public ResponseEntity<UserInfo> updateCurrentUser(@RequestBody UserUpdateRequest request, @AuthenticationPrincipal UserDetails details) {
-        return ResponseEntity.ok(userService.updateCurrentUser(request, details.getUsername()));
+    public ResponseEntity<UserInfo> updateCurrentUser(@RequestBody UserUpdateRequest request) {
+        return ResponseEntity.ok(userService.updateCurrentUser(request));
     }
     @PutMapping("/me/password")
-    public ResponseEntity<Map<String,String>> updatePassword(@RequestBody PasswordRequest request, @AuthenticationPrincipal UserDetails details) {
+    public ResponseEntity<Map<String,String>> updatePassword(@RequestBody PasswordRequest request) {
         // Implement password update logic here
-        userService.changePassword(request, details.getUsername());
+        userService.changePassword(request);
         return ResponseEntity.ok(Map.of("message", "Đổi mật khẩu thành công"));
     }
 
     @GetMapping("/me/vocabularies")
-    public ResponseEntity<List<Vocabulary>> getVocabulariesForCurrentUser(@AuthenticationPrincipal UserDetails details) {
+    public ResponseEntity<List<Vocabulary>> getVocabulariesForCurrentUser(@RequestParam Long userId) {
         // Implement logic to fetch vocabularies by topic ID
-        return ResponseEntity.ok(userService.getVocabulariesForCurrentUser(details.getUsername()));
+        return ResponseEntity.ok(userService.getVocabulariesForCurrentUser(userId));
     }
 
 }

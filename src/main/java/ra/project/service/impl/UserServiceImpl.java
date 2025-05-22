@@ -22,8 +22,8 @@ public class UserServiceImpl  implements IUserService {
     private  final UserVocabularyRepository userVocabularyRepository;
     private  final ModelMapper mapper;
     @Override
-    public UserInfo getCurrentUser(String email) {
-        User u = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+    public UserInfo getCurrentUser(Long userId) {
+        User u = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
         return UserInfo.builder()
                 .id(u.getId())
                 .email(u.getEmail())
@@ -33,8 +33,8 @@ public class UserServiceImpl  implements IUserService {
     }
 
     @Override
-    public UserInfo updateCurrentUser(UserUpdateRequest request, String email) {
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+    public UserInfo updateCurrentUser(UserUpdateRequest request) {
+        User user = userRepository.findById(request.getUserId()).orElseThrow(() -> new RuntimeException("User not found"));
         if (request.getName() != null) {
             user.setName(request.getName());
         }
@@ -48,8 +48,8 @@ public class UserServiceImpl  implements IUserService {
     }
 
     @Override
-    public void changePassword(PasswordRequest request , String email) {
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+    public void changePassword(PasswordRequest request) {
+        User user = userRepository.findById(request.getUserId()).orElseThrow(() -> new RuntimeException("User not found"));
         if (!request.getNewPassword().equals(request.getOldPassword())) {
             throw new RuntimeException("Passwords is equals old password");
         }
@@ -58,8 +58,8 @@ public class UserServiceImpl  implements IUserService {
     }
 
     @Override
-    public List<Vocabulary> getVocabulariesForCurrentUser(String email) {
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+    public List<Vocabulary> getVocabulariesForCurrentUser(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
         return userVocabularyRepository.findByUser(user).stream().map(UserVocabulary::getVocabulary).toList();
     }
 }

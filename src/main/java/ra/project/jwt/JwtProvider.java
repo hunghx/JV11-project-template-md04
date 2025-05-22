@@ -1,4 +1,4 @@
-package ra.project.security.jwt;
+package ra.project.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;

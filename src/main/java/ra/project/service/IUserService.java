@@ -8,8 +8,8 @@ import ra.project.model.entity.Vocabulary;
 import java.util.List;
 
 public interface IUserService {
-    UserInfo getCurrentUser(String email);
-    UserInfo updateCurrentUser(UserUpdateRequest request, String email);
-    void changePassword(PasswordRequest request, String email);
-    List<Vocabulary> getVocabulariesForCurrentUser(String email);
+    UserInfo getCurrentUser(Long userId);
+    UserInfo updateCurrentUser(UserUpdateRequest request);
+    void changePassword(PasswordRequest request);
+    List<Vocabulary> getVocabulariesForCurrentUser(Long userId);
 }
